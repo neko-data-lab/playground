@@ -8,81 +8,81 @@
 <style>
 :root{--ink:#174b62;--deep:#0b5274;--cream:#fff9e9;--coral:#ff947e;--mint:#7dd9c2}
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;background:linear-gradient(#b8f0ee,#f3eed8);color:var(--ink)}
-body{padding:12px;display:flex;justify-content:center;align-items:center;min-height:100vh}
-.app-container{width:min(100%,480px);margin:auto;display:flex;flex-direction:column;gap:10px}
+html,body{margin:0;height:100%;font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;background:linear-gradient(#b8f0ee,#f3eed8);color:var(--ink);overflow:hidden}
+body{padding:8px;display:flex;justify-content:center;align-items:center}
+.app-container{width:min(100%,480px);margin:auto;display:flex;flex-direction:column;gap:6px}
 header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 2px}
-h1{font-size:clamp(18px,4.5vw,23px);margin:0;color:#17617b;letter-spacing:.03em}
+h1{font-size:clamp(16px,4vw,21px);margin:0;color:#17617b;letter-spacing:.03em}
 .top-actions{display:flex;gap:6px}
 button{font:inherit;cursor:pointer;border:0;touch-action:manipulation}
-.small-btn{background:#fffdf5;color:#27647a;border:2px solid #b6e5dc;border-radius:999px;padding:6px 10px;font-weight:750;font-size:12px}
+.small-btn{background:#fffdf5;color:#27647a;border:2px solid #b6e5dc;border-radius:999px;padding:5px 9px;font-weight:750;font-size:11px}
 .stats{display:flex;gap:7px}
-.stat{flex:1;min-width:0;text-align:center;background:#ffffffc9;border:1px solid #b7e5df;border-radius:13px;padding:6px 4px;box-shadow:0 2px 0 #b7ded5}
-.stat span{display:block;font-size:9px;font-weight:700;color:#548596}
-.stat strong{display:block;font-size:18px;line-height:1.25;color:#155875}
-.board{position:relative;width:100%;aspect-ratio:2/3;overflow:hidden;border-radius:22px;border:4px solid #fffdf2;box-shadow:0 7px 0 #a8d9d1,0 12px 25px #4b9a9b35;background:#a8e9eb;touch-action:pan-y}
+.stat{flex:1;min-width:0;text-align:center;background:#ffffffc9;border:1px solid #b7e5df;border-radius:11px;padding:4px;box-shadow:0 2px 0 #b7ded5}
+.stat span{display:block;font-size:8px;font-weight:700;color:#548596}
+.stat strong{display:block;font-size:16px;line-height:1.2;color:#155875}
+.board{position:relative;width:100%;aspect-ratio:3/4;max-height:68vh;overflow:hidden;border-radius:18px;border:4px solid #fffdf2;box-shadow:0 6px 0 #a8d9d1,0 10px 20px #4b9a9b35;background:#a8e9eb;touch-action:pan-y}
 canvas{display:block;width:100%;height:100%;touch-action:none}
-.panel{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:#083c5799;backdrop-filter:blur(3px);z-index:3}
+.panel{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:12px;background:#083c5799;backdrop-filter:blur(3px);z-index:3}
 .panel.show{display:flex}
-.dialog{width:min(100%,330px);max-height:95%;overflow:auto;background:#fff9e9;border:3px solid #fff;border-radius:24px;padding:18px 16px;text-align:center;box-shadow:0 8px 0 #5c9da0}
-.dialog h2{margin:0 0 6px;font-size:23px;color:#17617b}
-.dialog p{margin:6px 0 11px;line-height:1.5;font-size:13px}
-.primary{display:block;width:100%;padding:11px 14px;margin:7px 0;border-radius:999px;background:#ff987e;color:#713d36;font-weight:850;font-size:15px;box-shadow:0 4px 0 #dc765f}
-.secondary{display:block;width:100%;padding:9px 12px;margin:7px 0;border-radius:999px;background:#d8f2e9;color:#205d65;font-weight:800;font-size:13px}
-.hint{font-size:11px!important;color:#54808a}
-.controls{display:flex;justify-content:space-between;gap:18px;margin:4px 2px}
-.move{flex:1;min-height:54px;border-radius:18px;background:#fffdf2;border:2px solid #b5e3d9;color:#17617b;font-size:22px;font-weight:900;box-shadow:0 4px 0 #a7d5cc;user-select:none;-webkit-user-select:none}
-.move:active,.move.pressed{transform:translateY(3px);box-shadow:0 1px 0 #a7d5cc;background:#e0f7ef}
-.instructions{background:#ffffffa8;border:1px solid #c4e7df;border-radius:14px;padding:9px 12px;font-size:11px;line-height:1.6;color:#3c7180}
+.dialog{width:min(100%,310px);max-height:92%;overflow:auto;background:#fff9e9;border:3px solid #fff;border-radius:20px;padding:14px;text-align:center;box-shadow:0 6px 0 #5c9da0}
+.dialog h2{margin:0 0 5px;font-size:21px;color:#17617b}
+.dialog p{margin:5px 0 9px;line-height:1.4;font-size:12px}
+.primary{display:block;width:100%;padding:10px;margin:6px 0;border-radius:999px;background:#ff987e;color:#713d36;font-weight:850;font-size:14px;box-shadow:0 3px 0 #dc765f}
+.secondary{display:block;width:100%;padding:8px;margin:6px 0;border-radius:999px;background:#d8f2e9;color:#205d65;font-weight:800;font-size:12px}
+.hint{font-size:10px!important;color:#54808a}
+.controls{display:flex;justify-content:space-between;gap:14px;margin:2px}
+.move{flex:1;min-height:46px;border-radius:14px;background:#fffdf2;border:2px solid #b5e3d9;color:#17617b;font-size:20px;font-weight:900;box-shadow:0 3px 0 #a7d5cc;user-select:none;-webkit-user-select:none}
+.move:active,.move.pressed{transform:translateY(2px);box-shadow:0 1px 0 #a7d5cc;background:#e0f7ef}
+.instructions{background:#ffffffa8;border:1px solid #c4e7df;border-radius:11px;padding:7px 10px;font-size:10px;line-height:1.5;color:#3c7180}
 .instructions b{color:#155875}
-.skin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0}
-.skin{background:#fff;border:2px solid #c8e8df;border-radius:12px;padding:7px 4px;color:#285e6d;font-size:11px;text-align:center}
+.skin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:8px 0}
+.skin{background:#fff;border:2px solid #c8e8df;border-radius:10px;padding:6px 4px;color:#285e6d;font-size:10px;text-align:center}
 .skin.selected{border-color:#ff987e;background:#fff0e8}
 .skin.locked{opacity:.65}
-.skin .fish{font-size:24px;display:block}
-.skin strong{display:block;margin:2px 0;font-size:12px}
-.skin span.perk{display:block;font-size:9px;color:#e87055;font-weight:700;margin-top:2px}
-.badge{display:inline-block;background:#e1f5ec;border-radius:99px;padding:3px 9px;font-size:11px;font-weight:800}
-.tab-row{display:flex;gap:5px;margin-bottom:8px}
-.tab-btn{flex:1;padding:6px;background:#e2f3ee;border:1px solid #b2e2d8;border-radius:10px;font-weight:800;font-size:12px;color:#205d65}
+.skin .fish{font-size:20px;display:block}
+.skin strong{display:block;margin:2px 0;font-size:11px}
+.skin span.perk{display:block;font-size:8px;color:#e87055;font-weight:700;margin-top:1px}
+.badge{display:inline-block;background:#e1f5ec;border-radius:99px;padding:2px 8px;font-size:10px;font-weight:800}
+.tab-row{display:flex;gap:4px;margin-bottom:6px}
+.tab-btn{flex:1;padding:5px;background:#e2f3ee;border:1px solid #b2e2d8;border-radius:8px;font-weight:800;font-size:11px;color:#205d65}
 .tab-btn.active{background:#ff987e;color:#fff;border-color:#e07b62}
 .tab-content{display:none}
 .tab-content.show{display:block}
-.comp-item{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #c8e8df;border-radius:10px;padding:6px 10px;margin-bottom:5px;text-align:left}
-.comp-emoji{font-size:22px}
-.comp-info strong{font-size:12px;display:block;color:#17617b}
-.comp-info span{font-size:10px;color:#54808a}
+.comp-item{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #c8e8df;border-radius:8px;padding:5px 8px;margin-bottom:4px;text-align:left}
+.comp-emoji{font-size:18px}
+.comp-info strong{font-size:11px;display:block;color:#17617b}
+.comp-info span{font-size:9px;color:#54808a}
 
+/* PC向けワイドレイアウトの最適化（画面内に収まるサイズ） */
 @media(min-width: 820px){
-  body{padding:20px;align-items:center}
+  body{padding:10px;align-items:center;overflow:hidden}
   .app-container{
-    width: min(100%, 820px);
+    width: min(100%, 780px);
     display: grid;
-    grid-template-columns: 240px 420px 240px;
+    grid-template-columns: 210px 380px 210px;
     grid-template-rows: auto auto auto auto;
-    gap: 14px 20px;
+    gap: 10px 16px;
     align-items: start;
   }
   header{grid-column: 1 / -1; margin:0}
   .stats{grid-column: 2; margin-bottom:0}
-  .board{grid-column: 2; width: 420px; aspect-ratio: 2/3; margin:0 auto}
+  .board{grid-column: 2; width: 380px; aspect-ratio: 3/4; max-height: 72vh; margin:0 auto}
   .controls{display: none !important;}
-  .instructions{grid-column: 2; margin-top:2px}
+  .instructions{grid-column: 2; margin-top:0; font-size:9px}
   
   .pc-sidebar-left{
     grid-column: 1; grid-row: 2 / span 3;
-    background: #ffffffb8; border:2px solid #b7e5df; border-radius:20px; padding:14px;
-    box-shadow:0 4px 15px #4b9a9b15;
+    background: #ffffffb8; border:2px solid #b7e5df; border-radius:16px; padding:10px;
+    max-height: 75vh; overflow-y: auto;
   }
   .pc-sidebar-right{
     grid-column: 3; grid-row: 2 / span 3;
-    background: #ffffffb8; border:2px solid #b7e5df; border-radius:20px; padding:14px;
-    box-shadow:0 4px 15px #4b9a9b15;
+    background: #ffffffb8; border:2px solid #b7e5df; border-radius:16px; padding:10px;
   }
-  .sidebar-title{font-size:13px;font-weight:900;color:#17617b;margin-bottom:8px;border-bottom:2px dashed #b7e5df;padding-bottom:4px}
-  .ranking-list{font-size:12px;line-height:1.6;color:#285e6d}
-  .mission-item{font-size:11px;background:#f0faf6;border:1px solid #c4e7df;border-radius:8px;padding:6px 8px;margin-bottom:6px}
-  .pc-controls-hint{font-size:11px;color:#3c7180;line-height:1.5}
+  .sidebar-title{font-size:11px;font-weight:900;color:#17617b;margin-bottom:6px;border-bottom:2px dashed #b7e5df;padding-bottom:3px}
+  .ranking-list{font-size:10px;line-height:1.5;color:#285e6d}
+  .mission-item{font-size:10px;background:#f0faf6;border:1px solid #c4e7df;border-radius:6px;padding:5px;margin-bottom:4px}
+  .pc-controls-hint{font-size:10px;color:#3c7180;line-height:1.4}
 }
 @media(max-width: 819px){
   .pc-sidebar-left, .pc-sidebar-right { display: none; }
@@ -102,7 +102,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 <aside class="pc-sidebar-left">
   <div class="sidebar-title">🏆 ハイスコア履歴</div>
   <div class="ranking-list" id="rankingList">記録なし</div>
-  <div class="sidebar-title" style="margin-top:14px">🎯 デリーミッション</div>
+  <div class="sidebar-title" style="margin-top:10px">🎯 デリーミッション</div>
   <div id="missionList">
     <div class="mission-item"><b>3コンボ達成</b><br>報酬: 🐚 10個</div>
     <div class="mission-item"><b>高さ500m到達</b><br>報酬: 🐚 20個</div>
@@ -148,7 +148,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
     <p>冒険中に見つけた仲間たち！</p>
     <div id="compListContainer"></div>
   </div>
-  <button class="secondary" id="closeWardrobe" style="margin-top:12px">もどる</button>
+  <button class="secondary" id="closeWardrobe" style="margin-top:10px">もどる</button>
  </div></div>
 </section>
 
@@ -162,7 +162,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
     <b>新フィーチャー:</b><br>
     ✨ 宇宙エリアでフィーバー発動！<br>
     ⚡ スキンごとの特殊効果が発動！<br>
-    🌩️ 嵐や夜の海などの天候変化！
+    🌩️ エネミーは上から踏むと撃破！
   </div>
 </aside>
 
@@ -171,7 +171,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
  <button class="move" id="rightBtn" aria-label="右へ移動">▶</button>
 </div>
 
-<div class="instructions"><b>遊び方</b>：足場に着地すると自動ジャンプ！コンボ、宝箱、巨大泡、フィーバータイムでハイスコアを目指そう。クラゲなどの障害物は避けて進もう！</div>
+<div class="instructions"><b>遊び方</b>：足場に着地すると自動ジャンプ！コンボ、宝箱、巨大泡、フィーバータイムでハイスコアを目指そう。クラゲなどの障害物は上から踏むと倒せるよ！</div>
 </div>
 
 <script>
@@ -179,7 +179,7 @@ window.addEventListener('DOMContentLoaded', () => {
   'use strict';
   const W = 400, H = 600, canvas = document.getElementById('game'), ctx = canvas.getContext('2d');
   const $ = id => document.getElementById(id);
-  const storeKey = 'whaleJumpSave_dx_v4';
+  const storeKey = 'whaleJumpSave_dx_v5';
 
   const skins = [
     {id:'blue', name:'いつものジンベエ', cost:0, body:'#438eae', belly:'#d8f3ed', spot:'#e9ffff', emoji:'🦈', perk:'標準バランス'},
@@ -316,7 +316,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     saveData();
     updateHUD();
-    if ($('resultText')) $('resultText').textContent = `今回の高さ：${h} m　／　貝がら：${runShells}個`;
+    if ($('resultText')) $('resultText').textContent = `今回の高さ：${h} m ／ 貝がら：${runShells}個`;
     if ($('bestText')) $('bestText').textContent = isBest ? '🎉 新記録！ おめでとう！' : `ベスト記録：${save.best} m`;
     showPanel('overPanel');
     beep(180, .25);
@@ -494,14 +494,17 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // 敵との接触判定（ご要望の挙動に変更）
     for (const en of enemies) {
       if (Math.abs(player.x - en.x) < 25 && Math.abs(player.y - en.y) < 25) {
-        if (player.vy > 0 && player.y < en.y) {
-          player.vy = -850;
+        // 上から踏みつけた場合（落下中でエネミーより上にいるとき）
+        if (player.vy > 0 && prevY + player.h / 2 <= en.y + 5) {
+          player.vy = -850; // 踏みつけジャンプ
           burst(en.x, en.y, '#ff947e', 15);
           beep(920, .15);
-          en.y = 9999;
+          en.y = 999; // 画面外へ消去（撃破）
         } else {
+          // 下や横から当たった場合（ゲームオーバーにせず、跳ね返る）
           if (pirateShield) {
             pirateShield = false;
             player.vy = -700;
@@ -509,8 +512,12 @@ window.addEventListener('DOMContentLoaded', () => {
             showToast('🛡️ 海賊の盾が身を守った！');
             beep(300, .3);
           } else {
-            endGame();
-            return;
+            // 下や横からの接触：上方または逆方向へ跳ね返す
+            player.vy = -600;
+            player.vx = (player.x < en.x ? -200 : 200);
+            burst(player.x, player.y, '#7dd9c2', 12);
+            showToast('💥 いてっ！');
+            beep(220, .2);
           }
         }
       }
@@ -566,7 +573,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (player.y - camera < H * .42) camera = player.y - H * .42;
     platforms = platforms.filter(p => p.y - camera < H + 70 && !p.gone);
     items = items.filter(i => i.y - camera < H + 80 && !i.taken);
-    enemies = enemies.filter(e => e.y - camera < H + 80 && e.y < 9000);
+    enemies = enemies.filter(e => e.y - camera < H + 80 && e.y < 900);
 
     let top = platforms.reduce((m, p) => Math.min(m, p.y), H);
     while (top - camera > -130) {
@@ -966,7 +973,6 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   window.addEventListener('blur', () => { held.left = held.right = false; dragActive = false; });
 
-  // 確実にクリック・タップイベントをバインド
   const startBtn = $('startBtn');
   const retryBtn = $('retryBtn');
   const homeBtn = $('homeBtn');
