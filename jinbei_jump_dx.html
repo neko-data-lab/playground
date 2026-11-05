@@ -48,12 +48,12 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .tab-btn.active{background:#ff987e;color:#fff;border-color:#e07b62}
 .tab-content{display:none}
 .tab-content.show{display:block}
+.comp-list{max-height:220px;overflow-y:auto;padding-right:4px}
 .comp-item{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #c8e8df;border-radius:8px;padding:5px 8px;margin-bottom:4px;text-align:left}
 .comp-emoji{font-size:18px}
 .comp-info strong{font-size:11px;display:block;color:#17617b}
 .comp-info span{font-size:9px;color:#54808a}
 
-/* PC向けワイドレイアウトの最適化（画面内に収まるサイズ） */
 @media(min-width: 820px){
   body{padding:10px;align-items:center;overflow:hidden}
   .app-container{
@@ -120,9 +120,9 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
  <div class="panel show" id="startPanel"><div class="dialog">
   <h2>海から宇宙へ大冒険！</h2>
   <p>左右移動やキーボードで足場をピョンピョン登ろう！</p>
-  <p>🌟 天候変化・フィーバー・お邪魔もの登場！</p>
+  <p>🌟 20種類のなかまを集めよう！</p>
   <button class="primary" id="startBtn">ゲームスタート！</button>
-  <button class="secondary" id="startWardrobe">着せ替え・スキル確認</button>
+  <button class="secondary" id="startWardrobe">着せ替え・図鑑確認</button>
   <p class="hint">PC：← →矢印 or A・Dキー / スマホ：画面スワイプ or ボタン</p>
  </div></div>
 
@@ -130,7 +130,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
   <h2>ぷか〜…おちちゃった！</h2>
   <p id="resultText">今回の高さ：0 m</p><p id="bestText"></p>
   <button class="primary" id="retryBtn">もう一回ジャンプ！</button>
-  <button class="secondary" id="overWardrobe">クローゼットへ</button>
+  <button class="secondary" id="overWardrobe">図鑑を見る</button>
   <button class="secondary" id="homeBtn">タイトルへ</button>
  </div></div>
 
@@ -138,15 +138,15 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
   <h2>クローゼット & 図鑑</h2>
   <div class="tab-row">
     <button class="tab-btn active" id="tabSkinBtn">スキン</button>
-    <button class="tab-btn" id="tabCompBtn">なかま図鑑</button>
+    <button class="tab-btn" id="tabCompBtn">なかま図鑑 (20)</button>
   </div>
   <div class="tab-content show" id="skinTabContent">
     <p>貝がらを集めて強力なスキンを解放しよう！<br><span class="badge">所持 🐚 <b id="wallet">0</b></span></p>
     <div class="skin-grid" id="skinGrid"></div>
   </div>
   <div class="tab-content" id="compTabContent">
-    <p>冒険中に見つけた仲間たち！</p>
-    <div id="compListContainer"></div>
+    <p>冒険で見つけた仲間たち！(<span id="compCountBadge">0</span>/20)</p>
+    <div class="comp-list" id="compListContainer"></div>
   </div>
   <button class="secondary" id="closeWardrobe" style="margin-top:10px">もどる</button>
  </div></div>
@@ -159,10 +159,9 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
     [A] / [←] : 左へ移動<br>
     [D] / [→] : 右へ移動<br>
     [Space] : ゲーム開始<br><br>
-    <b>新フィーチャー:</b><br>
-    ✨ 宇宙エリアでフィーバー発動！<br>
-    ⚡ スキンごとの特殊効果が発動！<br>
-    🌩️ エネミーは上から踏むと撃破！
+    <b>新仕様:</b><br>
+    🐠 なかまに出会うとその冒険中だけ一緒についてくる！<br>
+    📖 一度出会えば図鑑に永続登録！
   </div>
 </aside>
 
@@ -171,7 +170,7 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
  <button class="move" id="rightBtn" aria-label="右へ移動">▶</button>
 </div>
 
-<div class="instructions"><b>遊び方</b>：足場に着地すると自動ジャンプ！コンボ、宝箱、巨大泡、フィーバータイムでハイスコアを目指そう。クラゲなどの障害物は上から踏むと倒せるよ！</div>
+<div class="instructions"><b>遊び方</b>：足場に着地すると自動ジャンプ！コンボやアイテムで高みを目指そう。エネミーは上から踏むと倒せるよ！</div>
 </div>
 
 <script>
@@ -179,7 +178,7 @@ window.addEventListener('DOMContentLoaded', () => {
   'use strict';
   const W = 400, H = 600, canvas = document.getElementById('game'), ctx = canvas.getContext('2d');
   const $ = id => document.getElementById(id);
-  const storeKey = 'whaleJumpSave_dx_v5';
+  const storeKey = 'whaleJumpSave_dx_v6';
 
   const skins = [
     {id:'blue', name:'いつものジンベエ', cost:0, body:'#438eae', belly:'#d8f3ed', spot:'#e9ffff', emoji:'🦈', perk:'標準バランス'},
@@ -189,11 +188,28 @@ window.addEventListener('DOMContentLoaded', () => {
     {id:'rainbow', name:'にじいろジンベエ', cost:1000, body:'#9a8bc9', belly:'#f5e8ff', spot:'#fff7c8', emoji:'🌈', perk:'フィーバー時間1.5倍'}
   ];
 
+  // なかま20種類（エイ / マンタ を含む）
   const companions = [
-    {id:'turtle', emoji:'🐢', name:'ウミガメ', lore:'のんびり屋だけどジャンプの安定感を高めてくれる長老。'},
-    {id:'dolphin', emoji:'🐬', name:'イルカ', lore:'海原を駆け抜けるスピードスター。ジャンプ力がアップ。'},
-    {id:'jelly', emoji:'🪼', name:'クラゲ', lore:'神秘的な光を放つ。深海の案内人。'},
-    {id:'puffer', emoji:'🐡', name:'ハリセンボン', lore:'怒るとプクッと膨らむ、お茶目な海の守り神。'}
+    {id:'turtle', emoji:'🐢', name:'ウミガメ', lore:'長生きで物知りな海の長老。'},
+    {id:'dolphin', emoji:'🐬', name:'イルカ', lore:'海原を駆け抜ける大人気のスピードスター。'},
+    {id:'jelly', emoji:'🪼', name:'クラゲ', lore:'ゆらゆらと幻想的な光を放つ深海の案内人。'},
+    {id:'puffer', emoji:'🐡', name:'ハリセンボン', lore:'怒るとプクッと膨らむお茶目な守り神。'},
+    {id:'manta', emoji:'🛸', name:'マンタ（エイ）', lore:'優雅に海中を羽ばたくように泳ぐ巨大なエイの仲間。'},
+    {id:'orca', emoji:'🐋', name:'シャチ', lore:'海の王者。力強く冒険をエスコートしてくれる。'},
+    {id:'clownfish', emoji:'🐠', name:'カクレクマノミ', lore:'イソギンチャクの隙間から元気に挨拶してくれる。'},
+    {id:'pingu', emoji:'🐧', name:'ペンギン', lore: '南極からやってきた、よちよち歩きのかわいい相棒。'},
+    {id:'otter', emoji:'🦦', name:'ラッコ', lore:'貝を割るのが得意な、プカプカ浮いてる癒し系。'},
+    {id:'squid', emoji:'🦑', name:'ダイオウイカ', lore:'滅多に出会えない、深海のミステリアスな巨獣。'},
+    {id:'octopus', emoji:'🐙', name:'タコ', lore:'足が8本あって、器用に物を掴むのが得意。'},
+    {id:'seal', emoji:'🦭', name:'アザラシ', lore:'丸々としたボディでゴロゴロ転がるのが好き。'},
+    {id:'whale', emoji:'🐳', name:'クジラの赤ちゃん', lore:'大きな潮吹きを練習中の元気な赤ちゃん。'},
+    {id:'crab', emoji:'🦀', name:'カニ', lore:'ハサミをチョキチョキしながら横歩きでついてくる。'},
+    {id:'shrimp', emoji:'🦐', name:'エビ', lore:'ピョンピョン跳ねるのが大好きな赤いボディの仲間。'},
+    {id:'starfish', emoji:'⭐', name:'ヒトデ', lore:'砂浜や岩陰に張り付いている星型の不思議な生き物。'},
+    {id:'seahorse', emoji:'🐴', name:'タツノオトシゴ', lore:'ゆらゆら揺れる海草に隠れるのが上手な小さなお友達。'},
+    {id:'eel', emoji:'🐍', name:'ウツボ', lore:'岩の隙間から顔を出す、ちょっとワイルドな顔立ち。'},
+    {id:'pteropod', emoji:'🫧', name:'クリオネ', lore:'「流氷の天使」と呼ばれる神秘的で美しい姿の生物。'},
+    {id:'garden_eel', emoji:'🥢', name:'チンアナゴ', lore:'砂からひょっこり顔を出してまわりをキョロキョロ。'}
   ];
 
   let save = {
@@ -218,6 +234,9 @@ window.addEventListener('DOMContentLoaded', () => {
   let dragActive = false, dragTargetX = W / 2;
   let currentWeather = 'normal';
   let toastText = '', toastTimer = 0;
+  
+  // そのゲーム中だけ一緒についてくる「今回見つけたなかまのIDリスト」
+  let runCompanions = [];
 
   const rand = (a, b) => Math.random() * (b - a) + a;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -257,6 +276,7 @@ window.addEventListener('DOMContentLoaded', () => {
     score = 0; camera = 0; elapsed = 0; runShells = 0; runJumps = 0; particles = []; items = []; enemies = [];
     combo = 0; comboTimer = 0; giantBubbleTimer = 0; feverTimer = 0; comboFlash = 0;
     pirateShield = (save.skin === 'pirate');
+    runCompanions = []; // ゲーム開始時はリセット
 
     const wRoll = Math.random();
     currentWeather = wRoll < 0.2 ? 'night' : wRoll < 0.35 ? 'storm' : 'normal';
@@ -287,10 +307,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
     if (Math.random() < .85) {
       const r = Math.random();
-      let itemType = r < .03 ? 'giantBubble' : r < .07 ? 'treasure' : r < .12 ? 'companion' : r < .65 ? 'bubble' : 'shell';
-      if (itemType === 'companion' && save.companions.length >= companions.length) itemType = 'shell';
+      let itemType = r < .03 ? 'giantBubble' : r < .07 ? 'treasure' : r < .14 ? 'companion' : r < .65 ? 'bubble' : 'shell';
+      
       const locked = companions.filter(c => !save.companions.includes(c.id));
-      const companionId = locked.length ? locked[Math.floor(Math.random() * locked.length)].id : null;
+      const companionId = companions[Math.floor(Math.random() * companions.length)].id;
+      
       items.push({ x: x + w / 2 + rand(-15, 15), y: y - 25, type: itemType, companionId, taken: false, phase: rand(0, 6) });
     }
     if (-y > 800 && Math.random() < 0.22) {
@@ -344,6 +365,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   function renderWardrobe() {
     if ($('wallet')) $('wallet').textContent = save.shells;
+    if ($('compCountBadge')) $('compCountBadge').textContent = save.companions.length;
     renderSkinGrid();
     renderCompGrid();
   }
@@ -494,17 +516,14 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // 敵との接触判定（ご要望の挙動に変更）
     for (const en of enemies) {
       if (Math.abs(player.x - en.x) < 25 && Math.abs(player.y - en.y) < 25) {
-        // 上から踏みつけた場合（落下中でエネミーより上にいるとき）
         if (player.vy > 0 && prevY + player.h / 2 <= en.y + 5) {
-          player.vy = -850; // 踏みつけジャンプ
+          player.vy = -850;
           burst(en.x, en.y, '#ff947e', 15);
           beep(920, .15);
-          en.y = 999; // 画面外へ消去（撃破）
+          en.y = 999;
         } else {
-          // 下や横から当たった場合（ゲームオーバーにせず、跳ね返る）
           if (pirateShield) {
             pirateShield = false;
             player.vy = -700;
@@ -512,7 +531,6 @@ window.addEventListener('DOMContentLoaded', () => {
             showToast('🛡️ 海賊の盾が身を守った！');
             beep(300, .3);
           } else {
-            // 下や横からの接触：上方または逆方向へ跳ね返す
             player.vy = -600;
             player.vx = (player.x < en.x ? -200 : 200);
             burst(player.x, player.y, '#7dd9c2', 12);
@@ -551,12 +569,19 @@ window.addEventListener('DOMContentLoaded', () => {
           updateHUD();
           beep(980, .2);
           burst(it.x, iy, '#ffd76e', 24);
-        } else if (it.type === 'companion' && it.companionId && !save.companions.includes(it.companionId)) {
-          save.companions.push(it.companionId);
-          const c = companions.find(c => c.id === it.companionId);
+        } else if (it.type === 'companion' && it.companionId) {
+          // 図鑑に永続登録
+          if (!save.companions.includes(it.companionId)) {
+            save.companions.push(it.companionId);
+          }
+          // そのゲーム中の同行リストに追加（重複なし）
+          if (!runCompanions.includes(it.companionId)) {
+            runCompanions.push(it.companionId);
+          }
+          const c = companions.find(x => x.id === it.companionId);
           beep(1040, .22);
           burst(it.x, iy, '#d5f6ff', 22);
-          showToast(`${c ? c.emoji : '🐠'} ${c ? c.name : 'なかま'}と出会った！`);
+          showToast(`${c ? c.emoji : '🐠'} ${c ? c.name : 'なかま'}がついてくるよ！`);
         }
         saveData();
       }
@@ -817,7 +842,7 @@ window.addEventListener('DOMContentLoaded', () => {
         ctx.arc(it.x - 6, y - 7, 4, 0, Math.PI * 2);
         ctx.fill();
       } else if (it.type === 'companion') {
-        const c = companions.find(c => c.id === it.companionId);
+        const c = companions.find(x => x.id === it.companionId);
         ctx.font = '25px sans-serif';
         ctx.fillText(c ? c.emoji : '🐠', it.x, y);
       } else {
@@ -856,13 +881,19 @@ window.addEventListener('DOMContentLoaded', () => {
         ctx.arc(player.x, player.y - camera, 45 + Math.sin(elapsed * 12) * 5, 0, Math.PI * 2);
         ctx.stroke();
       }
-      const followers = companions.filter(c => save.companions.includes(c.id));
-      followers.forEach((c, i) => {
-        ctx.font = '18px sans-serif';
+      
+      // 今回の冒険で見つけた「なかま」たちがジンベエザメの周りについて回る描写
+      runCompanions.forEach((cid, i) => {
+        const compObj = companions.find(x => x.id === cid);
+        if (!compObj) return;
+        ctx.font = '20px sans-serif';
         ctx.textAlign = 'center';
-        const a = elapsed * 1.5 + i * Math.PI * 2 / Math.max(1, followers.length);
-        ctx.fillText(c.emoji, player.x + Math.cos(a) * 43, player.y - camera + Math.sin(a) * 23 - 5);
+        const angle = elapsed * 2.0 + i * (Math.PI * 2 / runCompanions.length);
+        const cx = player.x + Math.cos(angle) * 48;
+        const cy = (player.y - camera) + Math.sin(angle) * 26 - 6;
+        ctx.fillText(compObj.emoji, cx, cy);
       });
+
       drawWhale(player.x, player.y - camera);
     }
 
